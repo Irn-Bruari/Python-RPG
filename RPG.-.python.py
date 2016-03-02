@@ -1,9 +1,13 @@
 #RPG - Non HD Remake
 #by Ruari Phipps
 
+
+
 import random, os, time
 
 locations = {"North Town":["Salty Sea Tavern","Houses","Ethans Shop","Path"],"Salty Sea Tavern":["Buy Ale: 5 gold","Talk to owner","Exit"]}
+universalSleep = 0.02
+
 
 #Classes
 class Character (object):
@@ -29,6 +33,23 @@ class Character (object):
 #Functions
 def cls():
     os.system("cls")
+
+def delayedPrint(string, delay, name):
+
+
+    for l in string:
+  
+        print(l, end="")
+        time.sleep(delay)
+    print()
+
+def dialogue(name, string, delay):
+    stringArray = string.split("\n")
+    for item in stringArray:
+        print("{0}: ".format(name), end="")
+        delayedPrint(item, delay, name)
+        time.sleep(delay*3)
+    
 
 def promptEnter():
     input("\n(Press enter to continue)")
@@ -98,7 +119,7 @@ def beginStory(player):
     promptEnter()
     cls()
     print("A few hours later",player.name,"steps onto the land and is greated my and old man")
-    print("OLD MAN: Hello traveler and welcome to Ruari island\nJust so you know some mysterios things have been hapening on the island recently so take care\nAnyway have a map to guide you\nI would recomend going to North town first, the tavern is top quality")
+    dialogue("OLD MAN", "Hello traveler and welcome to Ruari island\nJust so you know some mysterios things have been hapening on the island recently so take care\nAnyway have a map to guide you\nI would recomend going to North town first, the tavern is top quality", universalSleep)
     time.sleep(5)
     print ("\nYOU HAVE OBTAINED A MAP!")
     print ("Type map to use it, try it now")
@@ -130,15 +151,15 @@ def selectFunction(player,Selected,location):
         if player.removeGold(5) != False:
             player.heal(5)
     if Selected == "Talk to owner" and location == "Salty Sea Tavern":
-        if player.storySection = "Salty Sea Tavern":
-            print ("JOSH: You must be a torist, welcome to the island\nI'm Josh the owner of this tavern is their anything i can do for you?")
+        if player.storySection == "Salty Sea Tavern":
+            dialogue("JOSH", "You must be a torist, welcome to the island\nI'm Josh the owner of this tavern is there anything I can do for you?", universalSleep)
             print ("(You ask about the mystrious things going on)")
-            print ("JOSH: Oh, well no one really knows whats happening.\nThere has been rumours of curses, magic and dragons but its all rubbish.\nNothings happened for decades it just stories to make it seem exiciting.")
-            print ("But there is something going on in the houses of this town, dont know what\nbut you look like you can deal with it.\nTell you what if you sort out whats going on, i'll give you 30 gold if thats alright,\nGo to the shop and tell my brother I sent you.")
+            dialogue("JOSH", "Oh, well no one really knows whats happening.\nThere has been rumours of curses, magic and dragons but its all rubbish.\nNothings happened for decades it just stories to make it seem exciting.", universalSleep)
+            dialogue ("JOSH", "But there is something going on in the houses of this town, dont know what\nbut you look like you can deal with it.\nTell you what if you sort out whats going on, i'll give you 30 gold if thats alright,\nGo to the shop and tell my brother I sent you.", universalSleep)
             player.storySection = "EthansShop"
         else:
-            print ("JOSH:"+random.choice["How you doing mate","Nothing better than one of my ales","Heard of a guy named Jay? Apparently he's creating powerful creatures. Thats just wrong","My brothers called ethan and he own the shop in this town","I wanted to be a stand up comeidian but this is alrigh"])
-    if Selected == "Exit" and location = "Salty Sea Tavern":
+            dialogue("JOSH", random.choice["How you doing mate?","Nothing better than one of my ales?","Heard of a guy named Jay? Apparently he's creating powerful creatures. Thats just wrong.","My brother's called Ethan and he owns the shop in this town.","I wanted to be a stand up comeidian, but this is alright."], universalSleep)
+    if Selected == "Exit" and location == "Salty Sea Tavern":
         location = "North Town"
         
         
