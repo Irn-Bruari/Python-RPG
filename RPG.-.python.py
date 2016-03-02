@@ -1,17 +1,13 @@
 #RPG - Non HD Remake
 #by Ruari Phipps
 
-
-
 import random, os, time
 
 locations = {"North Town":["Salty Sea Tavern","Houses","Ethans Shop","Path"],"Salty Sea Tavern":["Buy Ale: 5 gold","Talk to owner","Exit"]}
-universalSleep = 0.02
-
 
 #Classes
 class Character (object):
-    def __init__(self,name,className,health,maxHealth,armour,attack,speed,gold,inventory):
+    def __init__(self,name,className,health,maxHealth,armour,attack,speed,gold,inventory,storySection):
         self.name = name
         self.health = health
         self.maxHealth = maxHealth
@@ -20,6 +16,7 @@ class Character (object):
         self.attack = attack
         self.speed = speed
         self.gold = gold
+        self.storySection = storySection
     def heal(self,amount):
         if self.health == self.maxHealth:
             print ("Your already at max health")
@@ -28,28 +25,21 @@ class Character (object):
             if self.health > self.maxHealth:
                 self.health = self.maxHealth
             print ("You have been healed")
+    def removeGold(self,amount):
+        if self.gold - amount < 0:
+            print ("You dont have enough money for that")
+        else:
+            self.gold -= amount
+    
+            
+            
+        
+        
 
 
 #Functions
 def cls():
     os.system("cls")
-
-def delayedPrint(string, delay, name):
-
-
-    for l in string:
-  
-        print(l, end="")
-        time.sleep(delay)
-    print()
-
-def dialogue(name, string, delay):
-    stringArray = string.split("\n")
-    for item in stringArray:
-        print("{0}: ".format(name), end="")
-        delayedPrint(item, delay, name)
-        time.sleep(delay*3)
-    
 
 def promptEnter():
     input("\n(Press enter to continue)")
@@ -64,6 +54,7 @@ def showMap():
     print ("  |___T| |__|       ")
     promptEnter()
     cls()
+    return
 
 def startmenu():
     print ("Ruari Games Presents")
@@ -107,7 +98,7 @@ def newgame():
             break
         else:
             print ("Please enter valid input")
-    player = Character(name,className,hp,maxhp,armour,attack,speed,10,[])
+    player = Character(name,className,hp,maxhp,armour,attack,speed,10,[],"none")
     beginStory(player)
 
 def beginStory(player):
@@ -115,31 +106,33 @@ def beginStory(player):
     print("In a world not to different from ours,\na new adventure was about to begin.\n"+player.name,"the",player.className,"was on board a boat heading off unware about their future adventure.")
     promptEnter()
     cls()
-    print("As the sun begins to rise",player.name,"gets out of his cabin and comes up onto the deck.\n"+player.name,"look onto the distance and spot an island.\nThe island of Ruari!")
+    print("As the sun begins to rise",player.name,"comes up onto the deck\n"+player.name,"look onto the distance and spot an island.\nThe island of Ruari!")
     promptEnter()
     cls()
     print("A few hours later",player.name,"steps onto the land and is greated my and old man")
-    dialogue("OLD MAN", "Hello traveler and welcome to Ruari island\nJust so you know some mysterios things have been hapening on the island recently so take care\nAnyway have a map to guide you\nI would recomend going to North town first, the tavern is top quality", universalSleep)
+    print("OLD MAN: Hello traveler and welcome to Ruari island\nJust so you know some mysterios things have been hapening on the island recently so take care\nAnyway have a map to guide you\nI would recomend going to North town first, the tavern is top quality")
     time.sleep(5)
     print ("\nYOU HAVE OBTAINED A MAP!")
     print ("Type map to use it, try it now")
     while True:
         if input().lower() == "map":
             showMap()
+            break
         else:
             print ("Try again")
     location = "North Town"
+    player.storySection = "Salty Sea Tavern"
     mainSection(player,location)
     
 def mainSection(player,location):
     print ("You have entered",location)
     options = locations[location]
-    for x in range (0,len(shop)):
+    for x in range (0,len(options)):
         print (str(x+1)+"."+options[x])
     while True:
         selection = input("Enter number of choice: ")
-        if selection >= 0 or selection <= len(options)-1:
-            location, player = selectFunction(player,options[x-1])
+        if int(selection) >= 0 or selection <= len(options)-1:
+            location, player = selectFunction(player,options[int(selection)-1],location )
             break
         else:
             print("Enter Valid Choice")
@@ -152,13 +145,13 @@ def selectFunction(player,Selected,location):
             player.heal(5)
     if Selected == "Talk to owner" and location == "Salty Sea Tavern":
         if player.storySection == "Salty Sea Tavern":
-            dialogue("JOSH", "You must be a torist, welcome to the island\nI'm Josh the owner of this tavern is there anything I can do for you?", universalSleep)
+            print ("JOSH: You must be a torist, welcome to the island\nI'm Josh the owner of this tavern is their anything i can do for you?")
             print ("(You ask about the mystrious things going on)")
-            dialogue("JOSH", "Oh, well no one really knows whats happening.\nThere has been rumours of curses, magic and dragons but its all rubbish.\nNothings happened for decades it just stories to make it seem exciting.", universalSleep)
-            dialogue ("JOSH", "But there is something going on in the houses of this town, dont know what\nbut you look like you can deal with it.\nTell you what if you sort out whats going on, i'll give you 30 gold if thats alright,\nGo to the shop and tell my brother I sent you.", universalSleep)
+            print ("JOSH: Oh, well no one really knows whats happening.\nThere has been rumours of curses, magic and dragons but its all rubbish.\nNothings happened for decades it just stories to make it seem exiciting.")
+            print ("But there is something going on in the houses of this town, dont know what\nbut you look like you can deal with it.\nTell you what if you sort out whats going on, i'll give you 30 gold if thats alright,\nGo to the shop and tell my brother I sent you.")
             player.storySection = "EthansShop"
         else:
-            dialogue("JOSH", random.choice["How you doing mate?","Nothing better than one of my ales?","Heard of a guy named Jay? Apparently he's creating powerful creatures. Thats just wrong.","My brother's called Ethan and he owns the shop in this town.","I wanted to be a stand up comeidian, but this is alright."], universalSleep)
+            print ("JOSH:"+random.choice["How you doing mate","Nothing better than one of my ales","Heard of a guy named Jay? Apparently he's creating powerful creatures. Thats just wrong","My brothers called ethan and he own the shop in this town","I wanted to be a stand up comeidian but this is alrigh"])
     if Selected == "Exit" and location == "Salty Sea Tavern":
         location = "North Town"
         
